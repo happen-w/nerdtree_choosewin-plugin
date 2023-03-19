@@ -19,13 +19,17 @@ call NERDTreeAddKeyMap({
 " Else ask for a user input.
 "
 function! ChooseWinOpen(node) abort
+  if winnr("$") <= 2
+    call a:node.activate({'reuse': 'all', 'where': 'p', 'keepopen': 1})
+    return
+  endif
   " It is necessary to jump back the NERDTree window, cause local buffer
   " variables are required for the following procedure.
   let l:nerdwindow = win_getid()
 
   " Check if choosewin has been loaded.
   if exists('g:loaded_choosewin')
-    call choosewin#start(range(1, winnr('$')))
+    call choosewin#start(range(2, winnr('$')))
 
   else
     " Require user input.
@@ -51,5 +55,5 @@ function! ChooseWinOpen(node) abort
 
   " Jump back to the NERDTree window and continue to open the file.
   call win_gotoid(l:nerdwindow) 
-  call a:node.activate({'reuse': 'all', 'where': 'p'})
+  call a:node.activate({'reuse': 'all', 'where': 'p', 'keepopen': 1})
 endfunction
